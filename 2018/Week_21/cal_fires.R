@@ -1,7 +1,8 @@
 library(tidyverse)
 library(ggthemes)
+library(lubridate)
 
-fire <- read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/week21/week21_calfire_frap.csv")
+fire <- read_csv("https://github.com/rfordatascience/tidytuesday/blob/master/data/2018/2018-08-21/week21_calfire_frap.csv?raw=true")
 # Data dictionary http://frap.fire.ca.gov/projects/fire_data/fire_perimeters_data_description
 
 fire %>% 
@@ -41,5 +42,5 @@ ggplot(aes(month, fct_rev(year_cut), fill = n)) +
         plot.background = element_rect(fill = "grey20"),
         text            = element_text(size = 24, 
                                        color = "grey85"),
-        axis.text       = element_text(size = 20, 
+        axis.text       = element_text(size = 14, 
                                        color = "grey60"))

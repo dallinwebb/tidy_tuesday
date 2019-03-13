@@ -1,6 +1,7 @@
 library(tidyverse)
 library(readxl)
-data <- read_xlsx("tidy_tuesday_week2.xlsx")
+library(lubridate)
+data <- read_xlsx("2018/Week_02/tidy_tuesday_week2.xlsx")
 colnames(data) <- c("year","CB","DE","LB","OL","QB","RB","S","DT","TE","WR")
 
 order <- c("RB","QB","OL","TE","WR","CB","DE","DT","LB","S")
@@ -14,7 +15,7 @@ data_long <- data %>%
   mutate(off_def = as.factor(off_def),
          position = as.factor(position),
          pay = pay/1000000,
-         year = parse_date(year, "%Y")) %>% 
+         year = parse_date(as.character(year), format = "%Y")) %>% 
   group_by(position, year) %>% 
   filter(row_number(desc(pay)) == c(1:16)) %>% 
   mutate(ord = factor(position, levels = order)) %>% 

@@ -5,13 +5,12 @@ library(sf)
 hpi <- read_csv("https://github.com/rfordatascience/tidytuesday/raw/master/data/2019/2019-02-05/state_hpi.csv")
 
 now <- hpi %>% 
-  filter(year == 2018,
+  filter(year == 2001,
          month == 11) %>% 
   select(state,
          year_now = year,
          price_index_now = price_index)
 
-(
 joined <- hpi %>% 
   filter(year >= 2007) %>% 
   group_by(state) %>% 
@@ -23,8 +22,6 @@ joined <- hpi %>%
   left_join(now, by = "state") %>%
   mutate(price_index_diff = price_index_now / price_index_low - 1,
          price_index_pct  = scales::percent(price_index_diff))
-
-)
 
 state_boundaries <- USAboundaries::us_states() %>% 
   left_join(joined, by = c("stusps" = "state")) %>% 

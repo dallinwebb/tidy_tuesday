@@ -38,15 +38,16 @@ ggplot(aes(reorder(disease, percent_each, FUN = max), percent_each)) +
    labs(y = "",
        x = "",
        title = "Share of deaths by cause, World, 2016",
-       subtitle = "Data refers to the specific cause of death, which is distinguished from risk factors for death, such as air pollution, diet and other lifestyle factors.\n",
+       #subtitle = "Data refers to the specific cause of death, which is distinguished \nfrom risk factors for death, such as air pollution, diet and other \nlifestyle factors.\n",
        caption = "Source: IHME, Global Burden of Disease\n") +
   theme_minimal() +
   theme(panel.grid.major.y = element_blank(),
         panel.grid.minor.x = element_blank(),
         panel.grid = element_line(linetype = 'dashed'),
-        plot.title = element_text(hjust = -.72, size = 16),
-        plot.subtitle = element_text(hjust = 1.15),
-        plot.caption = element_text(hjust = -.5))
+        #plot.title = element_text(hjust = -.72, size = 16),
+        #plot.subtitle = element_text(hjust = 1.15),
+        #plot.caption = element_text(hjust = -.5)
+        )
  
 
 

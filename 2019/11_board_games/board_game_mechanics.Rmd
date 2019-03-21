@@ -68,7 +68,7 @@ board_games %>%
   arrange(desc(m_count))
 ```
 
-504. Hmm, I'm not familier with it. Looks like settlers of catan after with a cash system after looking [here](https://boardgamegeek.com/image/2703890/504). Probably very complicated.
+504. Hmm, I'm not familier with it. Looks like settlers of catan with a cash system after looking [here](https://boardgamegeek.com/image/2703890/504). Probably very complicated.
 
 <br>
 
@@ -116,7 +116,7 @@ top_mechanics <-
 top_mechanics
 ```
 
-Perfet, now lets plot them using a faceted density plot.
+Perfect, now lets plot them using a faceted density plot.
 
 ```{r}
 mechanics_count %>% 
@@ -133,6 +133,68 @@ mechanics_count %>%
         axis.text.x = element_text(angle = 90))
 ```
 
-All but one game mechanic seem to have rising in popularity rather quickly over the past two decades, while the Hex-and-Counter method has maintained a good share for for almost 40 years!
+All but one game mechanic seem to have rising in popularity rather quickly over the past two decades, while the Hex-and-Counter method has maintained a good share for for almost 40 years! 
+
+@WargamesToGo from twitter asked, "Why do all of the curves drop off at the end. Isn't something rising in its place?" Interesting question! It does look like all six of the game mechanics in this graph decrease sharply before the hard cut off point in 2016. Here's some ideas of what may be happening.
+
+- Perhaps there was an increase of video game popularity in the 2000s 
+- @JoeWasserman suspects that the decreases are mostly an artifact or a flaw in the data collection. The final years "likely represent an incomplete record of games published."
+- Or it very well could be other very new board game mechanics becomming more popular.
+
+_*Note:* When @thomas_mock curated these data, he only included 12% of more than 90,000 games in the Board Game Geek database._
+
+> To follow along with a fivethirtyeight article, I limited to only games with at least 50 ratings and for games between 1950 and 2016. This still leaves us with 10,532 games!
+
+Maybe this removed more recent board games since they haven't had the same opportunity to be reviewed compared to older games.
+
+Lets find out.
+
+```{r}
+library(bggAnalysis)
+data("BoardGames")
+
+board_games_full <- 
+  BoardGames %>% 
+  as_tibble() %>% 
+  janitor::clean_names(.) %>% 
+  select(year_published = details_yearpublished, 
+         mechanic       = attributes_boardgamemechanic)
+
+nrow(board_games_full)
+```
+
+Got the full data set! Now lets do the same thing we did before and see if anything changes.
+
+```{r}
+mechanics_long_full <- 
+  board_games_full %>% 
+  drop_na(mechanic) %>% 
+  separate_rows(mechanic, sep = ",")
+
+top_mechanics_full <- 
+  mechanics_long_full %>% 
+  count(mechanic, sort = T) %>% 
+  top_n(n = 6, wt = n) %>% 
+  pull(mechanic)
+
+mechanics_long_full %>% 
+  filter(mechanic %in% top_mechanics_full,
+         year_published >= 1950,
+         year_published <= 2016) %>% 
+  mutate(mechanic = factor(mechanic, levels = top_mechanics_full)) %>% 
+  ggplot(aes(year_published, fill = mechanic)) +
+  geom_density(col = "grey90", show.legend = F) +
+  facet_wrap(~mechanic, ncol = 3) +
+  scale_x_continuous(breaks = seq(1960, 2010, 10)) +
+  scale_fill_tableau() +
+  labs(title = "Most Occuring Board Game Mechanics over the years") +
+  theme_fivethirtyeight() +
+  theme(axis.text.y = element_blank(),
+        axis.text.x = element_text(angle = 90))
+
+```
+
+
 
 <br>
+

@@ -5,6 +5,7 @@ library(gridExtra)
 stops <- read_rds("2019/12_police_stops/tr137st9964_pa_philadelphia_2019_02_25.rds")
 
 # Get an even sample from whites and others groups
+set.seed(24)
 stops_sample <- 
   stops %>% 
   mutate(is_white = if_else(subject_race == "white", T, F),
@@ -83,48 +84,51 @@ white_density <-
   filter(is_white == TRUE) %>% 
   count(hour) %>%
   ggplot(aes(hour, n)) + 
-  geom_col(fill = "#003366", 
+  geom_col(fill  = "#003366", 
            width = 1, 
            alpha = .8) +
   geom_segment(aes(x = med_white-6, xend = med_white-6, y = 0, yend = 4000),
-               col = "white",
+               col  = "white",
                size = 1) +
-  coord_flip() +
-  scale_y_continuous(labels = scales::comma) +
+  coord_flip(ylim = c(0,5000)) +
+  scale_y_continuous(labels = scales::comma,
+                     breaks = seq(0,5000,1000)) +
   labs(x = NULL,
        y = NULL,
        title = NULL) +
   theme_minimal() +
-  theme(panel.grid = element_blank(),
-        plot.margin = margin(t = 2.3, r = 1.5, b = .2, l = -3.765, unit = "cm"),
-        axis.text.y = element_blank())
+  theme(panel.grid.minor   = element_blank(),
+        panel.grid.major.y = element_blank(),
+        plot.margin        = margin(t = 2.3, r = 3, b = .2, l = -3.68, unit = "cm"),
+        axis.text.y        = element_blank())
 
 minorities_density <- 
   week_counts %>% 
   filter(is_white == FALSE) %>% 
   count(hour) %>% 
   ggplot(aes(hour,n)) +
-  geom_col(fill = "#003366", 
+  geom_col(fill  = "#003366", 
            width = 1, 
            alpha = .8) +
   geom_vline(xintercept = med_black-10,
-             col = "white",
+             col  = "white",
              size = 1) +
-  annotate(geom = "text",
-           x = 7.7,
-           y = 1300,
+  annotate(geom  = "text",
+           x     = 7.7,
+           y     = 1300,
            label = "Median",
-           col = "white",
-           size = 4) +
+           col   = "white",
+           size  = 4) +
   scale_y_reverse(labels = scales::comma) +
   coord_flip() +
   labs(title = NULL,
        x = NULL,
        y = NULL) +
   theme_minimal() +
-  theme(panel.grid = element_blank(),
-        plot.margin = margin(t = 2.3, r = -1.195, b = .2, l = .5, unit = "cm"),
-        axis.text.y = element_blank()
+  theme(panel.grid.minor   = element_blank(),
+        panel.grid.major.y = element_blank(),
+        plot.margin        = margin(t = 2.28, r = -1.195, b = .2, l = .5, unit = "cm"),
+        axis.text.y        = element_blank()
         )
 
 grid.arrange(minorities_density,
